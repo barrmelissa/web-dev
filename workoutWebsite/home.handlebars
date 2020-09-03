@@ -1,0 +1,92 @@
+<h1>Workout Tracker</h1>
+<h3>Enter workout information below!</h3>
+<form>
+        <p>Exercise Name: <input type="text" name="WName"/></p>
+        <p>Reps: <input type="number" name="WReps"/></p>
+        <p>Weight: <input type="number" name="WWeight"/></p>
+        <p>
+                <input type="radio" value="lbs" name="WChoice"/>lbs
+                <input type="radio" value="Kg" name="WChoice"/>Kg
+        </p>
+        <p>Date: <input type="date" name="WDate"</></p>
+        <button type="submit">Submit</button>
+</form></br></br>
+
+<h3>Work out table</h3></br>
+<table id="WTable">
+        <tr>
+                <th class="hidden">ID</th>
+                <th>Exercise Name</th>
+                <th>Repetitions</th>
+                <th>Weight</th>
+                <th>lbs/Kg</th>
+                <th>Date</th>
+                <th></th>
+                <th></th>
+        </tr>
+        {{dataList}}
+        <tr>
+                <td>{{this.id}}</td>
+                <td>{{this.WName}}</td>
+                <td>{{this.WReps}}</td>
+                <td>{{this.WWeight}}</td>
+
+                {{this.lbs}}
+                        <td>lbs</td>
+
+                        <td>Kg</td>
+                <td>{{this.WDate}}</td>
+                <td><input type="button" value="delete" onclick="deleteFunction('workoutTab', this)"</td>
+                <td><input type="button" value="edit" onclick="editFunction('workoutTab', this)"</td>
+        </tr>
+        </table>
+script>
+        var form        =       document.querySelector("form");
+        form.addEventListener("submit", function(event){
+                event.PreventDefault();
+
+                //variables
+                var req         =       new XMLHttpRequest();
+                var URL         =       "http://flip3.engr.oregonstate.edu:27503";
+                var Params      =       "&WName=" + form.elements.WName.value + "&WReps=" + form.elements.WReps.value + "&WWeight=" + form.elements.WWeight.value + "&WDate=" + form.elements.WDate.value + "&WChoice=" + form.elements.WChoice.value;
+
+                //request
+                req.open("POST", URL, true);
+                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                req.addEventListener('load', function(){
+                        if(req.status >= 200 && req.status <= 399){
+                                <!--Do nothing-->
+                        }
+                        else{
+                                <!--Bad return--->
+                                console.log("An Error occured: " + req.status.Text);
+                        }
+                });
+                req.send(Params);
+        });
+
+        function deleteFunction(tableName, location){
+                //variables
+                var ID          =       location.parentNode.parentNode.getElementsByTagName("td")[0].innerText;
+                var req         =       new XMLHttpRequest();
+                var URL         =       "http://flip3.engr.oregonstate.edu:27503?id=" + ID + "&delete=y";
+
+                //request
+                req.open("GET", URL, true);
+                req.addEventListener('load', function(){
+                        if(req.status >= 200 && req.status <= 399){
+                                <!--Do nothing-->
+                        }
+                        else{
+                                <!--Bad return--->
+                                console.log("An Error occured: " + req.status.Text);
+                        }
+                });
+                req.send(null);
+        };
+function editFunction(tableName, location){
+                var ID          =       location.parentNode.parentNode.getElementsByTagName("td")[0].innerText;
+                var URL         =       "http://flip3.engr.oregonstate.edu:27503?id=" + ID + "&edit=y";
+                window.location.href = URL;
+        }
+</script>

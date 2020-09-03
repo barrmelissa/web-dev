@@ -1,0 +1,49 @@
+<h2>Workouts</h2>
+
+{{#each dataList}}
+
+<form>
+        <p hidden><input type="number" name="id" value={{id}}/>ID</p>
+        <p>Exercise Name: <input type="text" name="WName" value={{WName}}/></p>
+        <p>Reps: <input type="number" name="WReps" value={{WReps}}/></p>
+        <p>Weight: <input type="number" name="WWeight" value={{WWeights}}/></p>
+        <p>
+                {{if lbs}}
+                        <input type="radio" value="lbs" name="WChoice" checked />lbs
+                        <input type="radio" value="Kg" name="WChoice"/>Kg
+                {{else}}
+                <input type="radio" value="lbs" name="WChoice"/>lbs
+                <input type="radio" value="Kg" name="WChoice" checked />Kg
+                {{/if}}
+        </p>
+        <p>Date: <input type="date" name="WDate" value={{date}}</></p>
+        <button type="submit">Update Workout</button>
+</form></br></br>
+
+{{/each}}
+
+<script>
+        var form        =       document.querySelector("form");
+        form.addEventListener("submit", function(event){
+                event.preventDefault();
+
+                //Variables
+                var req         =       new XMLHttpRequest();
+                var URL         =       "http://flip3.engr.oregonstate.edu:27503/editPage/";
+                var Params      =       "id=" +form.elements.id.value "&WName=" + form.elements.WName.value + "&WReps=" + form.elements.WReps.value + "&WWeight=" + form.elements.WWeight.value + "&WDate=" + form.elements.WDate.value + "&WChoice=" + form.elements.WChoice.value;
+
+                //Request
+                req.open("POST", URL, true);
+                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                req.addEventListener('load', function(){
+                        if(req.status >= 200 && req.status <= 399){
+                                <!--Do nothing, everything was ok-->
+                        }
+                        else{
+                                <!--Everything was not ok, bad return--->
+                                console.log("An Error occured: " + req.status.Text);
+                        }
+                }};
+                req.send(Params);
+        );
+</script>
